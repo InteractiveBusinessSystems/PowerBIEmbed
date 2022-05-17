@@ -1,0 +1,20 @@
+@import '~office-ui-fabric-react/dist/sass/References.scss';
+
+.powerBiEmbedReports {
+  .container {
+    max-width: 800px;
+    height: 500px;
+    margin: 0px auto;
+  }
+
+  .embeddedReport {
+    height: 500px;
+  }
+
+  .description {
+    @include ms-font-l;
+    @include ms-fontColor-white;
+    background-color: $ms-color-themeDark;
+  }
+
+}

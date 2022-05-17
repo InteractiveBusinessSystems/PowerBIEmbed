@@ -1,0 +1,20 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "power-bi-embed-reports-client-side-solution",
+    "id": "bb8d092a-bbc5-4441-911d-142853c6088c",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "webApiPermissionRequests": [
+      { "resource": "Power BI Service", "scope": "Group.Read.All"},
+      { "resource": "Power BI Service", "scope": "Dataset.Read.All"},
+      { "resource": "Power BI Service", "scope": "Report.Read.All"},
+      { "resource": "Power BI Service", "scope": "Dashboard.Read.All"}
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/power-bi-embed-reports.sppkg"
+  }
+}
