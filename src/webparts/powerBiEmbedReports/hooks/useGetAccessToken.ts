@@ -5,9 +5,9 @@ import { UserAgentApplication, AuthError, AuthResponse } from "msal";
 
 export const useGetAccessToken = () => {
   const [accessToken, setAccessToken] = useState<string>("");
-  const [embedUrl, setEmbedUrl] = useState<string>("");
+  // const [embedUrl, setEmbedUrl] = useState<string>("");
   const [userName, setUsername] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [accessTokenError, setAccessTokenError] = useState<string>("");
 
   const msalInstance: UserAgentApplication = new UserAgentApplication(config.msalConfig);
 
@@ -54,23 +54,23 @@ export const useGetAccessToken = () => {
                       // Successful response
                       if (response.ok) {
                           console.log(`EmbedUrl: ${body["embedUrl"]}`);
-                          setEmbedUrl(body["embedUrl"]);
+                          // setEmbedUrl(body["embedUrl"]);
                           // setAccessToken(accessToken);
                       }
                       // If error message is available
                       else {
-                          setError("Error " + response.status + ": " + body.error.code);
+                          setAccessTokenError("Error " + response.status + ": " + body.error.code);
                       }
 
                   })
                   .catch(embedResponse => {
-                      setError("Error " + embedResponse.status + ":  An error has occurred");
+                      setAccessTokenError("Error " + embedResponse.status + ":  An error has occurred");
                   });
           })
           .catch(embedError => {
 
               // Error in making the API call
-              setError(embedError);
+              setAccessTokenError(embedError);
           });
   };
 
@@ -84,12 +84,12 @@ export const useGetAccessToken = () => {
           tryRefreshUserPermissions();
           // getembedUrl();
       } else {
-        setError(`Token type is: ${response.tokenType}`);
+        setAccessTokenError(`Token type is: ${response.tokenType}`);
       }
   };
 
   const failCallback = (failError: AuthError): void => {
-    setError(`Redirect error: ${failError}`);
+    setAccessTokenError(`Redirect error: ${failError}`);
   };
 
   msalInstance.handleRedirectCallback(successCallback,failCallback);
@@ -111,16 +111,12 @@ export const useGetAccessToken = () => {
           msalInstance.acquireTokenRedirect(config.loginRequest);
         }
         else {
-          setError(err.toString());
+          setAccessTokenError(err.toString());
         }
       });
   } else {
     //user is not logged in or cached, we need to log them in to acquire a token
     msalInstance.loginRedirect(config.loginRequest);
   }
-  console.log(`AccessToken: ${accessToken}`);
-  console.log(`embedUrl: ${embedUrl}`);
-  console.log(`error: ${error}`);
-  console.log(`userName: ${userName}`);
-  return {accessToken, embedUrl, userName, error};
+  return {accessToken, accessTokenError};
 };

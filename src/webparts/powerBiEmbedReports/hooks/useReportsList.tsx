@@ -5,6 +5,7 @@ import {getSP} from '../config/PNPjsPresets';
 // import "@pnp/sp/webs";
 // import "@pnp/sp/lists";
 // import "@pnp/sp/items";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
 
 export interface reportsListInitialState {
   data: IReportsList[];
@@ -41,9 +42,9 @@ const reportsListReducer = (state: reportsListInitialState, action: Action) => {
   }
 };
 
-export const useReportsList = () => {
+export const useReportsList = (props) => {
   const[state, reportsListDispatch] = useReducer(reportsListReducer, initialState);
-  const sp = getSP();
+  const sp = getSP(props.context);
 
   const getReportsListResults = useCallback(async () => {
       reportsListDispatch({type: "FETCH_START"});
@@ -60,7 +61,7 @@ export const useReportsList = () => {
         });
 
       });
-
+      console.log(results);
       return results;
 
   },[]);

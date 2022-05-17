@@ -16,6 +16,8 @@ var _sp: SPFI = null;
 var _graph: GraphFI = null;
 
 export const getSP = (context?: WebPartContext): SPFI => {
+  console.log(context);
+  console.log(_sp);
   if (_sp === null && context != null) {
     //You must add the @pnp/logging package to include the PnPLogging behavior it is no longer a peer dependency
     // The LogLevel set's at what level a message will be written to the console

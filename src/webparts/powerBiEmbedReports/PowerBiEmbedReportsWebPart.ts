@@ -21,7 +21,8 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart <I
     const element: React.ReactElement<IPowerBiEmbedReportsProps> = React.createElement(
       PowerBiEmbedReports,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context: this.context
       }
     );
 
@@ -32,9 +33,18 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart <I
     ReactDom.unmountComponentAtNode(this.domElement);
   }
 
-  protected get dataVersion(): Version {
-    return Version.parse('1.0');
+  constructor() {
+    super();
+    Object.defineProperty(this, "dataVersion", {
+      get() {
+        return Version.parse('1.0');
+      }
+    });
   }
+
+  // protected get dataVersion(): Version {
+  //   return Version.parse('1.0');
+  // }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
