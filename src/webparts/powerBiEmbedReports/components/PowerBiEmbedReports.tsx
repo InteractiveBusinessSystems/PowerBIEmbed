@@ -11,9 +11,7 @@ export default class PowerBiEmbedReports extends React.Component<IPowerBiEmbedRe
       <div className={styles.powerBiEmbedReports}>
         <div className={styles.container}>
           {/* <p className={styles.description}>{escape(this.props.description)}</p> */}
-          <App
-            context={this.props.context}
-          />
+          <App/>
         </div>
       </div>
     );

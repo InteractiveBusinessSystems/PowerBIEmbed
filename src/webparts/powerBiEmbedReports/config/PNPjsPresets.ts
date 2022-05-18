@@ -7,6 +7,7 @@ import "@pnp/logging";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
+import "@pnp/sp/site-users/web";
 import "@pnp/sp/batching";
 import { graphfi, GraphFI, SPFx as graphSPFx } from "@pnp/graph";
 import { spfi, SPFI, SPFx } from "@pnp/sp";
@@ -16,8 +17,6 @@ var _sp: SPFI = null;
 var _graph: GraphFI = null;
 
 export const getSP = (context?: WebPartContext): SPFI => {
-  console.log(context);
-  console.log(_sp);
   if (_sp === null && context != null) {
     //You must add the @pnp/logging package to include the PnPLogging behavior it is no longer a peer dependency
     // The LogLevel set's at what level a message will be written to the console

@@ -1,11 +1,7 @@
-import {useState, useReducer, useCallback} from 'react';
+import { useReducer, useCallback} from 'react';
 import { IReportsList } from './IReportsList.types';
 import {getSP} from '../config/PNPjsPresets';
-// import "@pnp/sp";
-// import "@pnp/sp/webs";
-// import "@pnp/sp/lists";
-// import "@pnp/sp/items";
-import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { spfi, SPFI } from '@pnp/sp';
 
 export interface reportsListInitialState {
   data: IReportsList[];
@@ -16,7 +12,7 @@ export interface reportsListInitialState {
 type Action = {type: "FETCH_START"} | {type: "FETCH_SUCCESS"; payload: reportsListInitialState["data"]} | {type: "FETCH_ERROR"; payload: reportsListInitialState["reportsListError"]} | {type: "RESET_REPORTSLIST"};
 
 export const initialState: reportsListInitialState = {
-  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", Department: "", Id: undefined}],
+  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", UsersWhoCanView: [], Id: undefined}],
   reportsListIsLoading: false,
   reportsListError: null,
 };
@@ -42,27 +38,38 @@ const reportsListReducer = (state: reportsListInitialState, action: Action) => {
   }
 };
 
-export const useReportsList = (props) => {
+export const useReportsList = () => {
   const[state, reportsListDispatch] = useReducer(reportsListReducer, initialState);
-  const sp = getSP(props.context);
+  const sp: SPFI = getSP();
 
   const getReportsListResults = useCallback(async () => {
       reportsListDispatch({type: "FETCH_START"});
       let results:IReportsList[] = [];
-      const items: any[] = await sp.web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'Department').top(500)();
-      items.forEach((report) => {
-        results.push({
-          "ReportName": report.Title,
-          "WorkspaceId": report.WorkspaceId,
-          "ReportId": report.ReportId,
-          "ReportSectionId": report.ReportSectionId,
-          "Department": report.Department,
-          "Id": parseInt(report.Id)
-        });
 
-      });
-      console.log(results);
-      return results;
+      const user:any = await spfi(sp).web.currentUser();
+      console.log(user);
+
+      try{
+      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ViewerType', 'UsersWhoCanView/Name', 'UsersWhoCanView/FirstName', 'UsersWhoCanView/LastName', 'UsersWhoCanView/JobTitle', 'UsersWhoCanView/Department').expand('UsersWhoCanView').top(500)();
+
+        items.forEach((report) => {
+          results.push({
+            "ReportName": report.Title,
+            "WorkspaceId": report.WorkspaceId,
+            "ReportId": report.ReportId,
+            "ReportSectionId": report.ReportSectionId,
+            "UsersWhoCanView": report.UsersWhoCanView,
+            "Id": parseInt(report.Id)
+          });
+
+        });
+        console.log(results);
+        reportsListDispatch({type: 'FETCH_SUCCESS', payload: results});
+      }
+      catch(e){
+        console.log(e.message);
+        reportsListDispatch({type: 'FETCH_ERROR', payload: e.message});
+      }
 
   },[]);
   return {state, getReportsListResults, reportsListDispatch};

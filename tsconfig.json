@@ -30,7 +30,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/webparts/powerBiEmbedReports/hooks/useGetAccessToken.tsx"  ],
   "exclude": [
     "node_modules",
     "lib"

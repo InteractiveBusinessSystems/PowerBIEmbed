@@ -7,22 +7,24 @@ import { useGetAccessToken } from '../hooks/useGetAccessToken';
 import { useReportsList } from '../hooks/useReportsList';
 import { useEffect } from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-export const App = (props) => {
+export const App = () => {
   const { accessToken, accessTokenError } = useGetAccessToken();
-  const { state, getReportsListResults, reportsListDispatch } = useReportsList(props.context);
+  const { state, getReportsListResults, reportsListDispatch } = useReportsList();
   const { data, reportsListIsLoading, reportsListError } = state;
 
   useEffect(() => {
     getReportsListResults();
   }, [getReportsListResults]);
 
-  if (reportsListIsLoading) {
-    return (
-      <Spinner size={SpinnerSize.large} />
-    );
-  }
+  console.log(reportsListIsLoading);
+  console.log(data);
+
+  // if (!reportsListIsLoading) {
+  //   return (
+  //     <Spinner size={SpinnerSize.large} />
+  //   );
+  // }
   if (accessTokenError) {
     return (
       <div>error: {JSON.stringify(accessTokenError)}</div>
@@ -63,9 +65,6 @@ export const App = (props) => {
 
         cssClassName={styles.embeddedReport}
 
-      // getEmbeddedComponent={(embeddedReport) => {
-      //   window.report = embeddedReport;
-      // }}
       />
     </div>
   )

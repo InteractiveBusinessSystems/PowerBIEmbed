@@ -11,6 +11,8 @@ import * as strings from 'PowerBiEmbedReportsWebPartStrings';
 import PowerBiEmbedReports from './components/PowerBiEmbedReports';
 import { IPowerBiEmbedReportsProps } from './components/IPowerBiEmbedReportsProps';
 
+import { getSP, getGraph } from './config/PNPjsPresets';
+
 export interface IPowerBiEmbedReportsWebPartProps {
   description: string;
 }
@@ -21,8 +23,7 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart <I
     const element: React.ReactElement<IPowerBiEmbedReportsProps> = React.createElement(
       PowerBiEmbedReports,
       {
-        description: this.properties.description,
-        context: this.context
+        description: this.properties.description
       }
     );
 
@@ -31,6 +32,13 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart <I
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
+  }
+
+  protected async onInit(): Promise<void> {
+
+    await super.onInit();
+    getSP(this.context);
+    getGraph(this.context);
   }
 
   constructor() {
