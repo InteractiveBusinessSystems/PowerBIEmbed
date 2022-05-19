@@ -5,6 +5,7 @@ export interface IReportsList {
   WorkspaceId: string;
   ReportId: string;
   ReportSectionId: string;
+  ViewerType: string;
   UsersWhoCanView: [];
   Id: number;
 }

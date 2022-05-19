@@ -17,11 +17,11 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "PowerBIEmbedReports" },
-    "description": { "default": "PowerBIEmbedReports description" },
-    "officeFabricIconFontName": "Page",
+    "title": { "default": "PowerBI Embed Reports" },
+    "description": { "default": "Custom web part to embed PowerBI reports" },
+    "officeFabricIconFontName": "PowerBILogo",
     "properties": {
-      "description": "PowerBIEmbedReports"
+      "description": "PowerBI Embed Reports"
     }
   }]
 }

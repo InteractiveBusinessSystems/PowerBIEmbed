@@ -12,7 +12,7 @@ export interface reportsListInitialState {
 type Action = {type: "FETCH_START"} | {type: "FETCH_SUCCESS"; payload: reportsListInitialState["data"]} | {type: "FETCH_ERROR"; payload: reportsListInitialState["reportsListError"]} | {type: "RESET_REPORTSLIST"};
 
 export const initialState: reportsListInitialState = {
-  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", UsersWhoCanView: [], Id: undefined}],
+  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ViewerType: "", UsersWhoCanView: [], Id: undefined}],
   reportsListIsLoading: false,
   reportsListError: null,
 };
@@ -46,21 +46,39 @@ export const useReportsList = () => {
       reportsListDispatch({type: "FETCH_START"});
       let results:IReportsList[] = [];
 
-      const user:any = await spfi(sp).web.currentUser();
-      console.log(user);
+      const currentUser:any = await spfi(sp).web.currentUser();
 
       try{
-      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ViewerType', 'UsersWhoCanView/Name', 'UsersWhoCanView/FirstName', 'UsersWhoCanView/LastName', 'UsersWhoCanView/JobTitle', 'UsersWhoCanView/Department').expand('UsersWhoCanView').top(500)();
+      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
 
         items.forEach((report) => {
-          results.push({
-            "ReportName": report.Title,
-            "WorkspaceId": report.WorkspaceId,
-            "ReportId": report.ReportId,
-            "ReportSectionId": report.ReportSectionId,
-            "UsersWhoCanView": report.UsersWhoCanView,
-            "Id": parseInt(report.Id)
-          });
+
+          if(report.ViewerType === 'User'){
+            let contains = false;
+            let usersWhoCanView = report.UsersWhoCanView;
+
+            usersWhoCanView.forEach((user)=> {
+              let userName = user.Name
+              let userEmail = userName.substring(18);
+
+              if(userEmail.toLowerCase() === currentUser.Email.toLowerCase()){
+                contains = true;
+              }
+            });
+
+            if (contains) {
+              results.push({
+                "ReportName": report.Title,
+                "WorkspaceId": report.WorkspaceId,
+                "ReportId": report.ReportId,
+                "ReportSectionId": report.ReportSectionId,
+                "ViewerType": report.ViewerType,
+                "UsersWhoCanView": report.UsersWhoCanView,
+                "Id": parseInt(report.Id)
+              });
+            }
+
+          }
 
         });
         console.log(results);

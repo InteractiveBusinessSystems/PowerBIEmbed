@@ -5,8 +5,6 @@ import { UserAgentApplication, AuthError, AuthResponse } from "msal";
 
 export const useGetAccessToken = () => {
   const [accessToken, setAccessToken] = useState<string>("");
-  // const [embedUrl, setEmbedUrl] = useState<string>("");
-  const [userName, setUsername] = useState<string>("");
   const [accessTokenError, setAccessTokenError] = useState<string>("");
 
   const msalInstance: UserAgentApplication = new UserAgentApplication(config.msalConfig);
@@ -38,51 +36,12 @@ export const useGetAccessToken = () => {
       });
   };
 
-  // Power BI REST API call to get the embed URL of the report
-  const getembedUrl = (): void  => {
-
-      fetch("https://api.powerbi.com/v1.0/myorg/groups/" + config.workspaceId + "/reports/" + config.reportId + "/ReportSection" + config.reportsectionId, {
-          headers: {
-              "Authorization": "Bearer " + accessToken
-          },
-          method: "GET"
-      })
-          .then(response => {
-              console.log(response);
-              response.json()
-                  .then(body => {
-                      // Successful response
-                      if (response.ok) {
-                          console.log(`EmbedUrl: ${body["embedUrl"]}`);
-                          // setEmbedUrl(body["embedUrl"]);
-                          // setAccessToken(accessToken);
-                      }
-                      // If error message is available
-                      else {
-                          setAccessTokenError("Error " + response.status + ": " + body.error.code);
-                      }
-
-                  })
-                  .catch(embedResponse => {
-                      setAccessTokenError("Error " + embedResponse.status + ":  An error has occurred");
-                  });
-          })
-          .catch(embedError => {
-
-              // Error in making the API call
-              setAccessTokenError(embedError);
-          });
-  };
-
   const successCallback = (response: AuthResponse): void => {
       if(response.tokenType === "id_token") {
         useGetAccessToken();
       } else if (response.tokenType === "access_token") {
           setAccessToken(response.accessToken);
-          setUsername(response.account.name);
-
           tryRefreshUserPermissions();
-          // getembedUrl();
       } else {
         setAccessTokenError(`Token type is: ${response.tokenType}`);
       }
@@ -101,8 +60,6 @@ export const useGetAccessToken = () => {
       .then((response:AuthResponse) => {
         //get access token from response: response.accessToken
         setAccessToken(response.accessToken);
-        setUsername(response.account.name);
-        // getembedUrl();
       })
       .catch((err: AuthError) => {
         //refresh access token silently from cached id-token
