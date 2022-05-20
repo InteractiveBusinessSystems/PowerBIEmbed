@@ -12,7 +12,7 @@ export interface reportsListInitialState {
 type Action = {type: "FETCH_START"} | {type: "FETCH_SUCCESS"; payload: reportsListInitialState["data"]} | {type: "FETCH_ERROR"; payload: reportsListInitialState["reportsListError"]} | {type: "RESET_REPORTSLIST"};
 
 export const initialState: reportsListInitialState = {
-  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ViewerType: "", UsersWhoCanView: [], Id: undefined}],
+  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined}],
   reportsListIsLoading: false,
   reportsListError: null,
 };
@@ -49,7 +49,7 @@ export const useReportsList = () => {
       const currentUser:any = await spfi(sp).web.currentUser();
 
       try{
-      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
+      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
 
         items.forEach((report) => {
 
@@ -72,6 +72,7 @@ export const useReportsList = () => {
                 "WorkspaceId": report.WorkspaceId,
                 "ReportId": report.ReportId,
                 "ReportSectionId": report.ReportSectionId,
+                "ReportUrl": report.ReportUrl,
                 "ViewerType": report.ViewerType,
                 "UsersWhoCanView": report.UsersWhoCanView,
                 "Id": parseInt(report.Id)

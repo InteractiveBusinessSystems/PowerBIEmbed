@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
+import { DisplayMode, Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
@@ -20,16 +20,17 @@ export interface IPowerBiEmbedReportsWebPartProps {
   groups?: IPropertyFieldGroupOrPerson[];
 }
 
-export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart <IPowerBiEmbedReportsWebPartProps> {
+export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart<IPowerBiEmbedReportsWebPartProps> {
 
   public render(): void {
-    const element: React.ReactElement<IPowerBiEmbedReportsProps> = React.createElement(
+
+    const element: React.ReactElement<IPowerBiEmbedReportsWebPartProps> = React.createElement(
       PowerBiEmbedReports,
       {
         // description: this.properties.description
+        groupIds: this.properties.groups
       }
     );
-
     ReactDom.render(element, this.domElement);
   }
 
@@ -71,18 +72,18 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart <I
                 // PropertyPaneTextField('description', {
                 //   label: strings.DescriptionFieldLabel
                 // }),
-                // PropertyFieldPeoplePicker('groups', {
-                //   label: 'Target Audience',
-                //   initialData: this.properties.groups,
-                //   allowDuplicate: false,
-                //   principalType: [PrincipalType.Users, PrincipalType.SharePoint, PrincipalType.Security],
-                //   onPropertyChange: this.onPropertyPaneFieldChanged,
-                //   context: this.context,
-                //   properties: this.properties,
-                //   onGetErrorMessage: null,
-                //   deferredValidationTime: 0,
-                //   key: 'groupFieldId'
-                // })
+                PropertyFieldPeoplePicker('groups', {
+                  label: 'Target Audience',
+                  initialData: this.properties.groups,
+                  allowDuplicate: false,
+                  principalType: [PrincipalType.Users, PrincipalType.SharePoint, PrincipalType.Security],
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  context: this.context as any,
+                  properties: this.properties,
+                  onGetErrorMessage: null,
+                  deferredValidationTime: 0,
+                  key: 'groupFieldId'
+                })
               ]
             }
           ]

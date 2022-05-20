@@ -7,6 +7,7 @@ import { useGetAccessToken } from '../hooks/useGetAccessToken';
 import { useReportsList } from '../hooks/useReportsList';
 import { useEffect } from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
+import { ReportMap } from './ReportMap';
 
 export const App = () => {
   const { accessToken, accessTokenError } = useGetAccessToken();
@@ -18,9 +19,9 @@ export const App = () => {
   }, [getReportsListResults]);
 
   if (reportsListIsLoading) {
-    return (
-      <Spinner size={SpinnerSize.large} />
-    );
+  return (
+    <Spinner size={SpinnerSize.large} />
+  );
   }
   if (accessTokenError) {
     return (
@@ -33,35 +34,41 @@ export const App = () => {
     )
   }
   return (
-    <PowerBIEmbed
-      embedConfig={{
-        type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-        id: config.reportId,
-        embedUrl: 'https://app.powerbi.com/reportEmbed',
-        accessToken: accessToken,
-        tokenType: models.TokenType.Aad,
-        settings: {
-          panes: {
-            filters: {
-              expanded: false,
-              visible: true
-            }
-          },
-          // background: models.BackgroundType.Transparent,
-        }
-      }}
-
-      eventHandlers={
-        new Map([
-          ['loaded', function () { console.log('Report loaded'); }],
-          ['rendered', function () { console.log('Report rendered'); }],
-          ['error', function (event) { console.log(event.detail); }]
-        ])
-      }
-
-      cssClassName={styles.embeddedReport}
-
+    <ReportMap
+      reports={data}
     />
+    // <div>
+    //   {data.map((report, index) => {if(index === 0) {console.log(report.ReportUrl);}})}
+    //   <PowerBIEmbed
+    //     embedConfig={{
+    //       type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+    //       id: config.reportId,
+    //       embedUrl: 'https://app.powerbi.com/reportEmbed',
+    //       accessToken: accessToken,
+    //       tokenType: models.TokenType.Aad,
+    //       settings: {
+    //         panes: {
+    //           filters: {
+    //             expanded: false,
+    //             visible: true
+    //           }
+    //         },
+    //         // background: models.BackgroundType.Transparent,
+    //       }
+    //     }}
+
+    //     eventHandlers={
+    //       new Map([
+    //         ['loaded', function () { console.log('Report loaded'); }],
+    //         ['rendered', function () { console.log('Report rendered'); }],
+    //         ['error', function (event) { console.log(event.detail); }]
+    //       ])
+    //     }
+
+    //     cssClassName={styles.embeddedReport}
+
+    //   />
+    // </div>
   )
 };
 
