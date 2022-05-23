@@ -1,7 +1,8 @@
 import { useReducer, useCallback} from 'react';
 import { IReportsList } from './IReportsList.types';
-import {getSP} from '../config/PNPjsPresets';
+import {getSP, getGraph} from '../config/PNPjsPresets';
 import { spfi, SPFI } from '@pnp/sp';
+import { graphfi, GraphFI } from '@pnp/graph';
 
 export interface reportsListInitialState {
   data: IReportsList[];
@@ -29,7 +30,7 @@ const reportsListReducer = (state: reportsListInitialState, action: Action) => {
       return { data: null, reportsListIsLoading: false, reportsListError: action.payload };
     }
     case 'RESET_REPORTSLIST': {
-      return { data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", Department: "", Id: undefined}],
+      return { data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", Department: "", UsersWhoCanView: [], ViewerType: "", Id: undefined}],
       reportsListIsLoading: false,
       reportsListError: null};
     }
@@ -41,6 +42,7 @@ const reportsListReducer = (state: reportsListInitialState, action: Action) => {
 export const useReportsList = () => {
   const[state, reportsListDispatch] = useReducer(reportsListReducer, initialState);
   const sp: SPFI = getSP();
+  const graph: GraphFI = getGraph();
 
   const getReportsListResults = useCallback(async () => {
       reportsListDispatch({type: "FETCH_START"});
@@ -48,17 +50,48 @@ export const useReportsList = () => {
 
       const currentUser:any = await spfi(sp).web.currentUser();
 
+      const currentUserGroups:any = await graphfi(graph).me.getMemberGroups(true);
+
       try{
       const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
 
         items.forEach((report) => {
+          if(report.ViewerType === 'Group'){
+            let contains = false;
+            let usersWhoCanView = report.UsersWhoCanView;
+
+            usersWhoCanView.forEach((group)=> {
+              let gName = group.Name;
+              let groupName = gName.substring(14);
+
+              currentUserGroups.forEach((userGroup)=>{
+                  console.log(userGroup);
+                  if(groupName.toLowerCase() === userGroup.toLowerCase()){
+                     contains = true;
+                  }
+              });
+            });
+
+            if (contains) {
+              results.push({
+                "ReportName": report.Title,
+                "WorkspaceId": report.WorkspaceId,
+                "ReportId": report.ReportId,
+                "ReportSectionId": report.ReportSectionId,
+                "ReportUrl": report.ReportUrl,
+                "ViewerType": report.ViewerType,
+                "UsersWhoCanView": report.UsersWhoCanView,
+                "Id": parseInt(report.Id)
+              });
+            }
+          }
 
           if(report.ViewerType === 'User'){
             let contains = false;
             let usersWhoCanView = report.UsersWhoCanView;
 
             usersWhoCanView.forEach((user)=> {
-              let userName = user.Name
+              let userName = user.Name;
               let userEmail = userName.substring(18);
 
               if(userEmail.toLowerCase() === currentUser.Email.toLowerCase()){
@@ -82,7 +115,6 @@ export const useReportsList = () => {
           }
 
         });
-        console.log(results);
         reportsListDispatch({type: 'FETCH_SUCCESS', payload: results});
       }
       catch(e){

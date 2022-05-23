@@ -9,6 +9,8 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/sp/site-users/web";
 import "@pnp/sp/batching";
+import "@pnp/graph/users";
+import "@pnp/graph/groups";
 import { graphfi, GraphFI, SPFx as graphSPFx } from "@pnp/graph";
 import { spfi, SPFI, SPFx } from "@pnp/sp";
 import { LogLevel, PnPLogging } from "@pnp/logging";
