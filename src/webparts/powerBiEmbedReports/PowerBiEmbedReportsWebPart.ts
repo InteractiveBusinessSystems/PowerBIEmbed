@@ -14,6 +14,7 @@ import { IPowerBiEmbedReportsProps } from './components/IPowerBiEmbedReportsProp
 import { getSP, getGraph } from './config/PNPjsPresets';
 import { PropertyFieldPeoplePicker, PrincipalType } from '@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker';
 import { IPropertyFieldGroupOrPerson } from '@pnp/spfx-property-controls/lib/PropertyFieldPeoplePicker';
+import { graphfi, GraphFI } from '@pnp/graph';
 
 export interface IPowerBiEmbedReportsWebPartProps {
   description?: string;
@@ -21,14 +22,47 @@ export interface IPowerBiEmbedReportsWebPartProps {
 }
 
 export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart<IPowerBiEmbedReportsWebPartProps> {
+  isAudienced: boolean = false;
+
+
+  protected async onInit(): Promise<void> {
+    await super.onInit();
+    getSP(this.context);
+    getGraph(this.context);
+
+    const graph: GraphFI = getGraph();
+    const currentUserGroups:any = await graphfi(graph).me.getMemberGroups(true);
+    const audienceGroups: any = this.properties.groups;
+
+    if(audienceGroups){
+      audienceGroups.forEach(audienceGroup => {
+        let contains = false;
+        const group = audienceGroup.id;
+        const audienceGroupName = group.substring(14);
+        currentUserGroups.forEach(userGroup => {
+            if(audienceGroupName === userGroup){
+              contains = true;
+            }
+        });
+        if(contains){
+          this.isAudienced = true;
+        }
+        else {
+          this.isAudienced = false;
+        }
+      });
+    }
+
+  }
 
   public render(): void {
 
-    const element: React.ReactElement<IPowerBiEmbedReportsWebPartProps> = React.createElement(
+   const element: React.ReactElement<IPowerBiEmbedReportsWebPartProps> = React.createElement(
       PowerBiEmbedReports,
       {
         // description: this.properties.description
-        groupIds: this.properties.groups
+        groupIds: this.properties.groups,
+        isAudienced: this.isAudienced
       }
     );
     ReactDom.render(element, this.domElement);
@@ -36,13 +70,6 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart<IP
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
-  }
-
-  protected async onInit(): Promise<void> {
-
-    await super.onInit();
-    getSP(this.context);
-    getGraph(this.context);
   }
 
   constructor() {

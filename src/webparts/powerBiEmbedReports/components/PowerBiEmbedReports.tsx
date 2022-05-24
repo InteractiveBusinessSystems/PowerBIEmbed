@@ -7,11 +7,15 @@ import { App } from './App';
 
 export default class PowerBiEmbedReports extends React.Component<IPowerBiEmbedReportsProps, {}> {
   public render(): React.ReactElement<IPowerBiEmbedReportsProps> {
+    console.log (this.props.isAudienced);
     return (
       <div className={styles.powerBiEmbedReports}>
-        <div className={styles.container}>
+        <div className={this.props.isAudienced? styles.container: styles.containerNoAudience}>
+        {/* <div className={styles.container}> */}
           {/* <p className={styles.description}>{escape(this.props.description)}</p> */}
-          <App/>
+          <App
+            isAudienced={this.props.isAudienced}
+          />
         </div>
       </div>
     );

@@ -4,4 +4,5 @@ import { IPropertyFieldGroupOrPerson } from "@pnp/spfx-property-controls/lib/Pro
 export interface IPowerBiEmbedReportsProps {
   description?: string;
   groupIds?: IPropertyFieldGroupOrPerson[];
+  isAudienced?: boolean;
 }

@@ -7,8 +7,16 @@
     margin: 0px auto;
   }
 
+  .containerNoAudience {
+    height: 0px;
+  }
+
   .embeddedReport {
     height: 500px;
+  }
+
+  .embeddedReportNoAudience {
+    height: 0px;
   }
 
   .reportTitle {

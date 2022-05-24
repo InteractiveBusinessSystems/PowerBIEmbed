@@ -3,6 +3,7 @@ import { IReportsList } from './IReportsList.types';
 import {getSP, getGraph} from '../config/PNPjsPresets';
 import { spfi, SPFI } from '@pnp/sp';
 import { graphfi, GraphFI } from '@pnp/graph';
+import { useCheckUserGroup } from './useCheckUserGroup';
 
 export interface reportsListInitialState {
   data: IReportsList[];
@@ -49,7 +50,6 @@ export const useReportsList = () => {
       let results:IReportsList[] = [];
 
       const currentUser:any = await spfi(sp).web.currentUser();
-
       const currentUserGroups:any = await graphfi(graph).me.getMemberGroups(true);
 
       try{
@@ -60,16 +60,8 @@ export const useReportsList = () => {
             let contains = false;
             let usersWhoCanView = report.UsersWhoCanView;
 
-            usersWhoCanView.forEach((group)=> {
-              let gName = group.Name;
-              let groupName = gName.substring(14);
-
-              currentUserGroups.forEach((userGroup)=>{
-                  console.log(userGroup);
-                  if(groupName.toLowerCase() === userGroup.toLowerCase()){
-                     contains = true;
-                  }
-              });
+            usersWhoCanView.forEach( (group)=> {
+              contains = useCheckUserGroup(group, currentUserGroups);
             });
 
             if (contains) {
