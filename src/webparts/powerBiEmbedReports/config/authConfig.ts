@@ -17,12 +17,19 @@ export const reportsectionId: string = "36c2950023335029ab34";
 // Tenant Id
 export const tenantId: string = '4ec55493-6b1c-4565-a868-2ae940882c82';
 
+
+const cacheLocation: 'sessionStorage' = 'sessionStorage';
+
 // msal config
 export const msalConfig = {
   auth: {
     clientId: clientId,
-    // authority: `https://login.microsoft.online.com/common/4ec55493-6b1c-4565-a868-2ae940882c82`,
-    // redirectUri: 'https://ibsmtg.sharepoint.com/sites/MaryvilleAcademy-SPFXPowerBIWebPart/_layouts/15/workbench.aspx'
+    // authority: `https://login.microsoft.online.com/common`,
+    redirectUri: 'http://localhost:8080'
+  },
+  cache: {
+    cacheLocation,
+    storeAuthStateInCookie: true
   }
 };
 

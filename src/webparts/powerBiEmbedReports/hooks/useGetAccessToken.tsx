@@ -9,6 +9,8 @@ export const useGetAccessToken = () => {
 
   const msalInstance: UserAgentApplication = new UserAgentApplication(config.msalConfig);
 
+  console.log(`msalInstance: ${msalInstance}`);
+
   // Power BI REST API call to refresh User Permissions in Power BI
     // Refreshes user permissions and makes sure the user permissions are fully updated
     // https://docs.microsoft.com/rest/api/power-bi/users/refreshuserpermissions
@@ -40,6 +42,7 @@ export const useGetAccessToken = () => {
       if(response.tokenType === "id_token") {
         useGetAccessToken();
       } else if (response.tokenType === "access_token") {
+          console.log(`successCallbackresponse: ${response}`);
           setAccessToken(response.accessToken);
           tryRefreshUserPermissions();
       } else {
@@ -53,11 +56,12 @@ export const useGetAccessToken = () => {
 
   msalInstance.handleRedirectCallback(successCallback,failCallback);
 
-  //check if there is a cached user
-  if (msalInstance.getAccount()) {
+  // //check if there is a cached user
+  // if (msalInstance.getAccount()) {
     //get access token silently from cached id-token
     msalInstance.acquireTokenSilent(config.loginRequest)
       .then((response:AuthResponse) => {
+        console.log(`aquireTokenSilentResponse: ${response}`);
         //get access token from response: response.accessToken
         setAccessToken(response.accessToken);
       })
@@ -71,9 +75,9 @@ export const useGetAccessToken = () => {
           setAccessTokenError(err.toString());
         }
       });
-  } else {
-    //user is not logged in or cached, we need to log them in to acquire a token
-    msalInstance.loginRedirect(config.loginRequest);
-  }
+  // } else {
+  //   //user is not logged in or cached, we need to log them in to acquire a token
+  //   msalInstance.loginRedirect(config.loginRequest);
+  // }
   return {accessToken, accessTokenError};
 };

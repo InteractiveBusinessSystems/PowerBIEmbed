@@ -4,8 +4,14 @@ import { useEffect } from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import { ReportMap } from './ReportMap';
 
-export const App = (props) => {
-  const isAudienced = props.isAudienced;
+export interface IAppProps {
+  isAudienced: boolean;
+  accessToken: string;
+  accessTokenError: string;
+}
+
+export const App = (props:IAppProps) => {
+  const {isAudienced, accessToken, accessTokenError } = props;
   const { state, getReportsListResults } = useReportsList();
   const { data, reportsListIsLoading, reportsListError } = state;
 
@@ -31,6 +37,8 @@ export const App = (props) => {
   return (
     <ReportMap
       reports={data}
+      accessToken={accessToken}
+      accessTokenError={accessTokenError}
     />
   )
 };

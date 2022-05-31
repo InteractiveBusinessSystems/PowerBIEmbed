@@ -3,7 +3,6 @@ import { IReportsList } from './IReportsList.types';
 import {getSP, getGraph} from '../config/PNPjsPresets';
 import { spfi, SPFI } from '@pnp/sp';
 import { graphfi, GraphFI } from '@pnp/graph';
-import { useCheckUserGroup } from './useCheckUserGroup';
 
 export interface reportsListInitialState {
   data: IReportsList[];
@@ -50,7 +49,7 @@ export const useReportsList = () => {
       let results:IReportsList[] = [];
 
       const currentUser:any = await spfi(sp).web.currentUser();
-      const currentUserGroups:any = await graphfi(graph).me.getMemberGroups(true);
+      const currentUserGroups = await graphfi(graph).me.getMemberGroups(true);
 
       try{
       const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
@@ -60,8 +59,16 @@ export const useReportsList = () => {
             let contains = false;
             let usersWhoCanView = report.UsersWhoCanView;
 
-            usersWhoCanView.forEach( (group)=> {
-              contains = useCheckUserGroup(group, currentUserGroups);
+            usersWhoCanView.forEach((group)=> {
+              const gName = group.Name;
+              const groupName = gName.substring(14);
+              let contains = false;
+
+              currentUserGroups.forEach((userGroup) => {
+                if (groupName.toLowerCase() === userGroup.toLowerCase()) {
+                  contains = true;
+                }
+              });
             });
 
             if (contains) {
