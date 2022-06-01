@@ -1,4 +1,7 @@
 // Scope of AAD app. Use the below configuration to use all the permissions provided in the AAD app through Azure portal.
+
+import { LogLevel } from "@azure/msal-browser";
+
 // Refer https://aka.ms/PowerBIPermissions for complete list of Power BI scopes
 export const scopes: string[] = ["https://analysis.windows.net/powerbi/api/Report.Read.All"];
 
@@ -25,7 +28,9 @@ export const msalConfig = {
   auth: {
     clientId: clientId,
     // authority: `https://login.microsoft.online.com/common`,
-    redirectUri: 'http://localhost:8080'
+    // knownAuthorities: [`login.microsoft.online.com/${tenantId}`]
+    // redirectUri: 'http://localhost:8080'
+    // redirectUri: 'http://localhost:3000/blank.html'
   },
   cache: {
     cacheLocation,

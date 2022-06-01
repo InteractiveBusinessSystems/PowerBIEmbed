@@ -9,15 +9,11 @@ export interface IAppWrapperProps {
   // description?: string;
   groups?: IPropertyFieldGroupOrPerson[];
   userGroups?: string[];
-  accessToken?: string;
-  accessTokenError?: string;
 }
 
 export const AppWrapper = (props:IAppWrapperProps) => {
   const audiencedGroups = props.groups;
   const userGroups = props.userGroups;
-  const accessToken = props.accessToken;
-  const accessTokenError = props.accessTokenError;
   const { state, checkMemberGroupsAgainstGroups } = useCheckMemberGroupsAgainstGroups();
   const { data, checkMemberGroupsIsLoading, checkMemberGroupsError} = state;
   const isAudienced = data;
@@ -41,8 +37,6 @@ export const AppWrapper = (props:IAppWrapperProps) => {
           {/* <p className={styles.description}>{escape(this.props.description)}</p> */}
           <App
             isAudienced={isAudienced}
-            accessToken={accessToken}
-            accessTokenError={accessTokenError}
           />
         </div>
       </div>

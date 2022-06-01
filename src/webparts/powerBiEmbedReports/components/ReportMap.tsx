@@ -9,13 +9,11 @@ import { IReportsList } from '../hooks/IReportsList.types';
 export interface IReportMapProps {
   reports: IReportsList;
   accessToken: string;
-  accessTokenError: string;
 }
 
 export const ReportMap = (props) => {
-  const { reports, accessToken, accessTokenError } = props;
+  const { reports, accessToken } = props;
   let reportId = "";
-  console.log(accessToken);
 
   React.useEffect(()=>{
     if(reports){
@@ -23,8 +21,8 @@ export const ReportMap = (props) => {
         if (index === 0) {
           reportId = report.ReportId;
         }
-        console.log(reportId);
       });
+      console.log(reportId);
     }
   },[reports]);
 
@@ -84,12 +82,7 @@ export const ReportMap = (props) => {
   // )
   // }
 
-  if(accessTokenError){
-    return (
-      <div>{JSON.stringify(accessTokenError)}</div>
-    )
-  }
-  else if (reportId) {
+if (reportId) {
     return (
       <PowerBIEmbed
         embedConfig={{
@@ -124,7 +117,7 @@ export const ReportMap = (props) => {
   }
   else {
     return (
-      <div></div>
+      <div>No report to show</div>
     )
   }
 };

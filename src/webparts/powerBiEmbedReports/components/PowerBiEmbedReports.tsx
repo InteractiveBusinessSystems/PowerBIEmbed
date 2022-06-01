@@ -11,8 +11,6 @@ export default class PowerBiEmbedReports extends React.Component<IPowerBiEmbedRe
       <AppWrapper
           groups={this.props.groups}
           userGroups={this.props.userGroups}
-          accessToken={this.props.accessToken}
-          accessTokenError={this.props.accessTokenError}
       />
     );
 

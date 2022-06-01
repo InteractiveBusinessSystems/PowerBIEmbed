@@ -39,8 +39,8 @@ const checkMemberGroupsReducer = (state: checkMemberGroupsInitialState, action: 
 
 export const useCheckMemberGroupsAgainstGroups = () => {
   const [state, checkMemberGroupsDispatch] = useReducer(checkMemberGroupsReducer, initialState);
-  const [audienceGroups, setAudienceGroups] = useState([]);
-  const [currentUserGroups, setCurrentUserGroups] = useState([]);
+  // const [audienceGroups, setAudienceGroups] = useState([]);
+  // const [currentUserGroups, setCurrentUserGroups] = useState([]);
 
   // useEffect(()=>{
   //   if(groups.length > 0){
