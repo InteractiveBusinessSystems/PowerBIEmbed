@@ -123,6 +123,8 @@ export const App = (props:IAppProps) => {
   else {
     return (
       <div>
+        <h1>Power BI Embed Web Part</h1>
+        <p>Reports should go here!!</p>
         <p>reportId: {reportId}</p>
         <p>accessToken: {accessToken}</p>
       </div>
