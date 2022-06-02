@@ -27,10 +27,8 @@ const cacheLocation: 'sessionStorage' = 'sessionStorage';
 export const msalConfig = {
   auth: {
     clientId: clientId,
-    // authority: `https://login.microsoft.online.com/common`,
-    // knownAuthorities: [`login.microsoft.online.com/${tenantId}`]
-    // redirectUri: 'http://localhost:8080'
-    // redirectUri: 'http://localhost:3000/blank.html'
+    authority: `https://login.microsoftonline.com/${tenantId}`,
+    // redirectUri: 'https://127.0.0.1'
   },
   cache: {
     cacheLocation,

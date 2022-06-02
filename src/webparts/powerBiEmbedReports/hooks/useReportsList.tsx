@@ -5,15 +5,15 @@ import { spfi, SPFI } from '@pnp/sp';
 import { graphfi, GraphFI } from '@pnp/graph';
 
 export interface reportsListInitialState {
-  data: IReportsList[];
+  reports: IReportsList[];
   reportsListIsLoading: boolean;
   reportsListError: unknown;
 }
 
-type Action = {type: "FETCH_START"} | {type: "FETCH_SUCCESS"; payload: reportsListInitialState["data"]} | {type: "FETCH_ERROR"; payload: reportsListInitialState["reportsListError"]} | {type: "RESET_REPORTSLIST"};
+type Action = {type: "FETCH_START"} | {type: "FETCH_SUCCESS"; payload: reportsListInitialState["reports"]} | {type: "FETCH_ERROR"; payload: reportsListInitialState["reportsListError"]} | {type: "RESET_REPORTSLIST"};
 
 export const initialState: reportsListInitialState = {
-  data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined}],
+  reports: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined}],
   reportsListIsLoading: false,
   reportsListError: null,
 };
@@ -21,16 +21,16 @@ export const initialState: reportsListInitialState = {
 const reportsListReducer = (state: reportsListInitialState, action: Action) => {
   switch(action.type) {
     case 'FETCH_START': {
-      return { data: null, reportsListIsLoading: true, reportsListError: null };
+      return { reports: null, reportsListIsLoading: true, reportsListError: null };
     }
     case 'FETCH_SUCCESS': {
-      return { data: action.payload, reportsListIsLoading: false, reportsListError: null };
+      return { reports: action.payload, reportsListIsLoading: false, reportsListError: null };
     }
     case 'FETCH_ERROR': {
-      return { data: null, reportsListIsLoading: false, reportsListError: action.payload };
+      return { reports: null, reportsListIsLoading: false, reportsListError: action.payload };
     }
     case 'RESET_REPORTSLIST': {
-      return { data: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", Department: "", UsersWhoCanView: [], ViewerType: "", Id: undefined}],
+      return { reports: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", Department: "", UsersWhoCanView: [], ViewerType: "", Id: undefined}],
       reportsListIsLoading: false,
       reportsListError: null};
     }

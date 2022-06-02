@@ -76,8 +76,18 @@ export const useGetAccessToken = () => {
     })
     .catch(error => {
       console.log(error);
-      return msalInstance.acquireTokenRedirect(silentRequest);
       // getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
+      return msalInstance.acquireTokenRedirect(silentRequest);
+
+      // msalInstance.acquireTokenPopup(silentRequest)
+      // .then(popUpResponse => {
+      //   console.log(popUpResponse);
+      //   getAccessTokenDispatch({type: 'FETCH_SUCCESS', payload: popUpResponse.accessToken});
+      // })
+      // .catch(popUpError => {
+      //   getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
+      // })
+
     });
 
   },[]);
