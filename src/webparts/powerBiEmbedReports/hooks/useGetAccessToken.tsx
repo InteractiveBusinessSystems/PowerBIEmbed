@@ -1,6 +1,7 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useReducer, useState } from "react";
 import * as config from "../config/authConfig";
-import { UserAgentApplication, AuthError, AuthResponse } from "msal";
+import { InteractionRequiredAuthError, PublicClientApplication } from "@azure/msal-browser";
+import { containsInvalidFileFolderChars } from "@pnp/sp";
 
 export interface getAccessTokenInitialState {
   accessToken: string;
@@ -45,31 +46,64 @@ export const useGetAccessToken = () => {
   const getAccessToken = useCallback(async ()=> {
     getAccessTokenDispatch({type: "FETCH_START"});
 
-    const msalInstance: UserAgentApplication = new UserAgentApplication(config.msalConfig);
+    const msalInstance: PublicClientApplication = new PublicClientApplication(config.msalConfig);
     console.log(msalInstance);
 
-    const account = msalInstance.getAccount();
-    console.log(account);
+    msalInstance.handleRedirectPromise().then((tokenResponse) => {
+        let accountObj = null;
+        if(tokenResponse !== null){
+          accountObj = tokenResponse.account;
+          // const id_token = tokenResponse.idToken;
+          // const access_token = tokenResponse.accessToken;
+          getAccessTokenDispatch({type: 'FETCH_SUCCESS', payload: tokenResponse.accessToken});
+        } else {
+          const currentAccounts = msalInstance.getAllAccounts();
+          if (!currentAccounts || currentAccounts.length === 0){
+            //No User signed in
+            return;
+          } else if (currentAccounts.length ===1){
+            // more than one user signed in, find desired user with getAccountByUsername(username)
+          } else {
+            accountObj = currentAccounts[0];
+          }
+        }
+        const username = accountObj.username;
+    }).catch((error) => {
+       getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
+    });
+
+    const request = {
+      scopes: config.scopes,
+    };
 
     const silentRequest = {
       scopes: config.scopes,
-      account: account,
-      forceRefresh: false
+      loginHint: 'sdarroch@ibs365.com'
+    }
+
+    try{
+      const loginResponse = await msalInstance.ssoSilent(silentRequest);
+      console.log(loginResponse);
+    }
+    catch (err) {
+      console.log(err);
+      if (err instanceof InteractionRequiredAuthError) {
+          const loginResponse = await msalInstance.loginPopup(silentRequest)
+          .catch(error => {
+            console.log(error);
+            getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
+          })
+      }
+    }
+
+    const currentAccounts = msalInstance.getAllAccounts();
+    console.log (currentAccounts);
+    if(currentAccounts){
+      msalInstance.setActiveAccount(currentAccounts[0]);
     };
 
-    msalInstance.handleRedirectCallback((error: AuthError, response: AuthResponse) => {
-      console.log('Redirect Callback was called');
-      if(response){
-        console.log(response);
-        getAccessTokenDispatch({type: 'FETCH_SUCCESS', payload: response.accessToken});
-      }
-      else {
-        console.log(error);
-        getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
-      }
-    });
 
-    msalInstance.acquireTokenSilent(silentRequest)
+    msalInstance.acquireTokenSilent(request)
     .then(response => {
       console.log(response);
       getAccessTokenDispatch({type: 'FETCH_SUCCESS', payload: response.accessToken});
@@ -77,25 +111,15 @@ export const useGetAccessToken = () => {
     .catch(error => {
       console.log(error);
       // getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
-      return msalInstance.acquireTokenRedirect(silentRequest);
-
-      // msalInstance.acquireTokenPopup(silentRequest)
-      // .then(popUpResponse => {
-      //   console.log(popUpResponse);
-      //   getAccessTokenDispatch({type: 'FETCH_SUCCESS', payload: popUpResponse.accessToken});
-      // })
-      // .catch(popUpError => {
-      //   getAccessTokenDispatch({type: 'FETCH_ERROR', payload: error});
-      // })
+      if(error instanceof InteractionRequiredAuthError) {
+        return msalInstance.acquireTokenRedirect(request);
+      }
 
     });
 
   },[]);
   return { accessTokenState, getAccessToken };
 
-  // const msalInstance: UserAgentApplication = new UserAgentApplication(config.msalConfig);
-
-  // console.log(`msalInstance: ${msalInstance}`);
 
   // // Power BI REST API call to refresh User Permissions in Power BI
   //   // Refreshes user permissions and makes sure the user permissions are fully updated
