@@ -4,7 +4,7 @@
     "name": "Power-BI-Embed-Reports",
     "id": "bb8d092a-bbc5-4441-911d-142853c6088c",
     "version": "1.0.0.0",
-    "includeClientSideAssets": false,
+    "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "webApiPermissionRequests": [
