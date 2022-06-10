@@ -11,7 +11,9 @@
       { "resource": "Power BI Service", "scope": "Group.Read.All"},
       { "resource": "Power BI Service", "scope": "Dataset.Read.All"},
       { "resource": "Power BI Service", "scope": "Report.Read.All"},
-      { "resource": "Power BI Service", "scope": "Dashboard.Read.All"}
+      { "resource": "Power BI Service", "scope": "Dashboard.Read.All"},
+      { "resource": "Windows Azure Active Directory", "scope": "User.Read"},
+      { "resource": "MaryvillePowerBIPOCSPFxResource", "scope": "user_impersonation"}
     ]
   },
   "paths": {

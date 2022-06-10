@@ -48,7 +48,8 @@ export default class PowerBiEmbedReportsWebPart extends BaseClientSideWebPart<IP
       {
         // description: this.properties.description
         groups: this.properties.groups,
-        userGroups: this.userGroups
+        userGroups: this.userGroups,
+        aadHttpClient: this.context.aadHttpClientFactory
       }
     );
     ReactDom.render(element, this.domElement);
