@@ -9,4 +9,7 @@ export interface IReportsList {
   ViewerType: string;
   UsersWhoCanView: [];
   Id: number;
+  EmbedToken?: string;
+  EmbedUrl?: string;
+  AccessToken?: string;
 }

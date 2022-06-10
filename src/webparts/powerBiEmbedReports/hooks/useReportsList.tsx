@@ -30,7 +30,7 @@ const reportsListReducer = (state: reportsListInitialState, action: Action) => {
       return { reports: null, reportsListIsLoading: false, reportsListError: action.payload };
     }
     case 'RESET_REPORTSLIST': {
-      return { reports: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", Department: "", UsersWhoCanView: [], ViewerType: "", Id: undefined}],
+      return { reports: [{ReportName: "", WorkspaceId: "", ReportUrl: "", ReportId: "", ReportSectionId: "", Department: "", UsersWhoCanView: [], ViewerType: "", Id: undefined}],
       reportsListIsLoading: false,
       reportsListError: null};
     }
