@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useReportsList } from '../hooks/useReportsList';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import { useGetReportConfig } from '../hooks/useGetReportConfig';
 import { models } from 'powerbi-client';
 import { PowerBIEmbed } from 'powerbi-client-react';
 import styles from './PowerBiEmbedReports.module.scss';
-import {Carousel, CarouselButtonsLocation, CarouselButtonsDisplay, CarouselIndicatorsDisplay, CarouselIndicatorShape} from '@pnp/spfx-controls-react'
+import {Carousel, CarouselButtonsLocation, CarouselButtonsDisplay, CarouselIndicatorsDisplay, CarouselIndicatorShape, ICarouselImageProps} from '@pnp/spfx-controls-react'
 import { AadHttpClientFactory } from '@microsoft/sp-http';
 
 export interface IAppProps {
@@ -24,7 +24,7 @@ export const App = (props:IAppProps) => {
   // const [reportId, setReportId]= useState<string>();
   // const [embedUrl, setEmbedUrl] = useState<string>();
   // const [embedToken, setEmbedToken] = useState<string>();
-  let reportsMap;
+  let reportsMap: JSX.Element | JSX.Element[] | ICarouselImageProps[] = [];
 
   useEffect(() => {
     getReportsListResults();
@@ -32,7 +32,7 @@ export const App = (props:IAppProps) => {
 
   useEffect(() => {
     if(isAudienced){
-      if(!reportsListError && !reportsListIsLoading){
+      if(reports !== null && !reportsListError && !reportsListIsLoading){
         getReportConfig(aadHttpClient, reports);
       }
     }
@@ -88,7 +88,7 @@ export const App = (props:IAppProps) => {
         </div>
       );
     }
-  },[reports, getReportConfigIsLoading, getReportConfigError]);
+  },[getReportConfigIsLoading, getReportConfigError]);
 
 
   if (reportsListIsLoading) {

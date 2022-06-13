@@ -13,7 +13,7 @@ export interface reportsListInitialState {
 type Action = {type: "FETCH_START"} | {type: "FETCH_SUCCESS"; payload: reportsListInitialState["reports"]} | {type: "FETCH_ERROR"; payload: reportsListInitialState["reportsListError"]} | {type: "RESET_REPORTSLIST"};
 
 export const initialState: reportsListInitialState = {
-  reports: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined}],
+  reports: null,
   reportsListIsLoading: false,
   reportsListError: null,
 };
@@ -30,7 +30,7 @@ const reportsListReducer = (state: reportsListInitialState, action: Action) => {
       return { reports: null, reportsListIsLoading: false, reportsListError: action.payload };
     }
     case 'RESET_REPORTSLIST': {
-      return { reports: [{ReportName: "", WorkspaceId: "", ReportUrl: "", ReportId: "", ReportSectionId: "", Department: "", UsersWhoCanView: [], ViewerType: "", Id: undefined}],
+      return { reports: null,
       reportsListIsLoading: false,
       reportsListError: null};
     }

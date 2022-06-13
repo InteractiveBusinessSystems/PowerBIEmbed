@@ -1,5 +1,5 @@
 import { useCallback, useReducer } from "react";
-import { AadHttpClient, AadHttpClientFactory, HttpClientResponse } from '@microsoft/sp-http';
+import { AadHttpClient, AadHttpClientFactory, HttpClientResponse, IHttpClientOptions } from '@microsoft/sp-http';
 import * as config from "../config/authConfig";
 import { IReportsList } from "./IReportsList.types";
 
@@ -67,21 +67,33 @@ export const useGetReportConfig = () => {
   const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports)=> {
     getReportConfigDispatch({type: "FETCH_START"});
     let results: IReportsList[];
+    let requestOptions : IHttpClientOptions;
+    const AzureFunctionUrl = 'https://maryvillepowerbipocfunctionapp.azurewebsites.net/api/GetEmbedToken?code=XH2KY-GZomKT_jPvotQ6ADtLC2nyNFEqQSzJPZCjg7eiAzFuHNhhFw==';
 
+    console.log(reports);
     reports.forEach(report => {
+      console.log(report.WorkspaceId);
+      console.log(report.ReportId);
+
+      let requestUrl = `${AzureFunctionUrl}?groupId=${report.WorkspaceId}&reportId=${report.ReportId}`;
+      console.log(requestUrl);
+
       aadHttpClient.getClient(
         //This is the App's Client ID
         '170af556-d26c-40b3-9a96-361ce11d683d'
       )
       .then((client:AadHttpClient): void =>{
-        console.log(client);
         client.get(
-          //This is the Azure Function Url
-          'https://maryvillepowerbipocfunctionapp.azurewebsites.net/api/GetEmbedToken?code=XH2KY-GZomKT_jPvotQ6ADtLC2nyNFEqQSzJPZCjg7eiAzFuHNhhFw==',
+          requestUrl,
           AadHttpClient.configurations.v1
         ).then((response: HttpClientResponse): Promise<IReportConfig> => {
           console.log(response);
-          return response.json();
+          if(response.status === 200){
+            return response.json();
+          }
+          else{
+            throw "Token fetch request failed!";
+          }
         })
         .then((jsonResponse: IReportConfig): void => {
           console.log(jsonResponse);
