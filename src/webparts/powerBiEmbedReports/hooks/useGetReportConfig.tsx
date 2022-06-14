@@ -68,7 +68,7 @@ export const useGetReportConfig = () => {
     getReportConfigDispatch({type: "FETCH_START"});
     let results: IReportsList[];
     let requestOptions : IHttpClientOptions;
-    const AzureFunctionUrl = 'https://maryvillepowerbipocfunctionapp.azurewebsites.net/api/GetEmbedToken?code=XH2KY-GZomKT_jPvotQ6ADtLC2nyNFEqQSzJPZCjg7eiAzFuHNhhFw==';
+    const AzureFunctionUrl = 'https://maryvillepowerbifunctionapp.azurewebsites.net/api/GetToken?code=05XQ2YuZTk_W1stv-Yr11J1ZWucLwhyAldLyrLiycrQMAzFuKRbETQ==';
 
     console.log(reports);
     reports.forEach(report => {
