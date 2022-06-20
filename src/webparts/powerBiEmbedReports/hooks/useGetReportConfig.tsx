@@ -33,7 +33,7 @@ export interface getReportConfigInitialState {
 type Action = { type: "FETCH_START" } | { type: "FETCH_SUCCESS"; payload: getReportConfigInitialState["ReportConfig"] } | { type: "FETCH_ERROR"; payload: getReportConfigInitialState["getReportConfigError"] } | { type: "RESET_getReportConfig" };
 
 export const initialState: getReportConfigInitialState = {
-  ReportConfig: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: ""}],
+  ReportConfig: [{ ReportName: "", DataSetsId: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
   getReportConfigIsLoading: false,
   getReportConfigError: null,
 };
@@ -51,7 +51,7 @@ const getReportConfigReducer = (state: getReportConfigInitialState, action: Acti
     }
     case 'RESET_getReportConfig': {
       return {
-        ReportConfig: [{ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: ""}] ,
+        ReportConfig: [{ ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
         getReportConfigIsLoading: false,
         getReportConfigError: null
       };
@@ -64,66 +64,59 @@ const getReportConfigReducer = (state: getReportConfigInitialState, action: Acti
 export const useGetReportConfig = () => {
   const [reportConfigState, getReportConfigDispatch] = useReducer(getReportConfigReducer, initialState);
 
-  const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports)=> {
-    getReportConfigDispatch({type: "FETCH_START"});
+  const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports) => {
+    getReportConfigDispatch({ type: "FETCH_START" });
     let results: IReportsList[];
-    let requestOptions : IHttpClientOptions;
+    let requestOptions: IHttpClientOptions;
     const AzureFunctionUrl = 'https://maryvillepowerbifunctionapp.azurewebsites.net/api/GetToken?code=05XQ2YuZTk_W1stv-Yr11J1ZWucLwhyAldLyrLiycrQMAzFuKRbETQ==';
 
     console.log(reports);
-    reports.forEach(report => {
-      console.log(report.WorkspaceId);
-      console.log(report.ReportId);
 
-      let requestUrl = `${AzureFunctionUrl}?groupId=${report.WorkspaceId}&reportId=${report.ReportId}`;
-      console.log(requestUrl);
+    let reportsString = JSON.stringify(reports);
+    console.log(reportsString);
 
-      aadHttpClient.getClient(
-        //This is the App's Client ID
-        '170af556-d26c-40b3-9a96-361ce11d683d'
-      )
-      .then((client:AadHttpClient): void =>{
-        client.get(
+    // const requestUrl = `${AzureFunctionUrl}&reports=${reportsString}`;
+    const requestUrl = AzureFunctionUrl;
+    const httpClientOptions: IHttpClientOptions = {
+      body: reportsString
+    }
+
+    aadHttpClient.getClient(
+      //This is the App's Client ID
+      '170af556-d26c-40b3-9a96-361ce11d683d'
+    )
+      .then((client: AadHttpClient): void => {
+        client.post(
+          //Calling AzureFunction
           requestUrl,
-          AadHttpClient.configurations.v1
-        ).then((response: HttpClientResponse): Promise<IReportConfig> => {
-          console.log(response);
-          if(response.status === 200){
-            return response.json();
-          }
-          else{
-            throw "Token fetch request failed!";
-          }
-        })
-        .then((jsonResponse: IReportConfig): void => {
-          console.log(jsonResponse);
-          results.push({
-            "ReportName": report.ReportName,
-            "WorkspaceId": report.WorkspaceId,
-            "ReportId": report.ReportId,
-            "ReportSectionId": report.ReportSectionId,
-            "ReportUrl": report.ReportUrl,
-            "ViewerType": report.ViewerType,
-            "UsersWhoCanView": report.UsersWhoCanView,
-            "Id": report.Id,
-            "EmbedToken": jsonResponse.EmbedToken,
-            "EmbedUrl": jsonResponse.EmbedUrl,
-            "AccessToken": jsonResponse.AccessToken
-          });
+          AadHttpClient.configurations.v1,
+          httpClientOptions
+        )
+          .then((response: HttpClientResponse): Promise<IReportsList[]> => {
+            console.log(response);
+            if (response.status === 200) {
+              return response.json();
+            }
+            else {
+              throw "Token fetch request failed!";
+            }
+          })
+          .then((jsonResponse: IReportsList[]): void => {
+            console.log(jsonResponse);
 
-        })
-        .catch(error => {
-          console.log(error);
-          getReportConfigDispatch({type: 'FETCH_ERROR', payload: error});
-        });
+            getReportConfigDispatch({ type: 'FETCH_SUCCESS', payload: jsonResponse });
+
+          })
+          .catch(error => {
+            console.log(error);
+            getReportConfigDispatch({ type: 'FETCH_ERROR', payload: error });
+          });
+      })
+      .catch(aadError => {
+        console.log(aadError);
+        getReportConfigDispatch({ type: 'FETCH_ERROR', payload: aadError });
       });
 
-      getReportConfigDispatch({type: 'FETCH_SUCCESS', payload: results});
-
-    })
-
-
-
-  },[]);
+  }, []);
   return { reportConfigState, getReportConfig };
 };

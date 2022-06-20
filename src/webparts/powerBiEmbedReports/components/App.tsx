@@ -47,8 +47,9 @@ export const App = (props:IAppProps) => {
   // },[getReportConfigError, getReportConfigIsLoading]);
 
 
-  useEffect(()=> {
+  // useEffect(()=> {
     if (!getReportConfigIsLoading && !getReportConfigError) {
+      console.log(ReportConfig);
       reportsMap = ReportConfig.map((report) =>
         <div>
           <a
@@ -88,7 +89,7 @@ export const App = (props:IAppProps) => {
         </div>
       );
     }
-  },[getReportConfigIsLoading, getReportConfigError]);
+  // },[getReportConfigIsLoading, getReportConfigError]);
 
 
   if (reportsListIsLoading) {

@@ -2,6 +2,7 @@ import { ReactText } from "react";
 
 export interface IReportsList {
   ReportName: string;
+  DataSetsId: string;
   WorkspaceId: string;
   ReportId: string;
   ReportSectionId: string;
