@@ -21,9 +21,6 @@ export const App = (props:IAppProps) => {
   const { reports, reportsListIsLoading, reportsListError } = state;
   const { reportConfigState, getReportConfig } = useGetReportConfig();
   const { ReportConfig, getReportConfigIsLoading, getReportConfigError } = reportConfigState;
-  // const [reportId, setReportId]= useState<string>();
-  // const [embedUrl, setEmbedUrl] = useState<string>();
-  // const [embedToken, setEmbedToken] = useState<string>();
   let reportsMap: JSX.Element | JSX.Element[] | ICarouselImageProps[] = [];
 
   useEffect(() => {
@@ -38,16 +35,7 @@ export const App = (props:IAppProps) => {
     }
   },[isAudienced, reportsListError, reportsListIsLoading, getReportConfig]);
 
-  // useEffect(() => {
-  //   if(!getReportConfigError && !getReportConfigIsLoading){
-  //     setReportId(ReportConfig.ReportId);
-  //     setEmbedToken(ReportConfig.EmbedToken);
-  //     setEmbedUrl(ReportConfig.EmbedUrl);
-  //   }
-  // },[getReportConfigError, getReportConfigIsLoading]);
 
-
-  // useEffect(()=> {
     if (!getReportConfigIsLoading && !getReportConfigError) {
       console.log(ReportConfig);
       reportsMap = ReportConfig.map((report) =>
@@ -89,7 +77,6 @@ export const App = (props:IAppProps) => {
         </div>
       );
     }
-  // },[getReportConfigIsLoading, getReportConfigError]);
 
 
   if (reportsListIsLoading) {
@@ -120,36 +107,6 @@ export const App = (props:IAppProps) => {
   }
   else {
     return (
-      // <PowerBIEmbed
-      //   embedConfig={{
-      //     type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-      //     id: reportId,
-      //     embedUrl: embedUrl,
-      //     accessToken: embedToken,
-      //     tokenType: models.TokenType.Embed,
-      //     settings: {
-      //       panes: {
-      //         filters: {
-      //           expanded: false,
-      //           visible: true
-      //         }
-      //       },
-      //       // background: models.BackgroundType.Transparent,
-      //     }
-      //   }}
-
-      //   eventHandlers={
-      //     new Map([
-      //       ['loaded', function () { console.log('Report loaded'); }],
-      //       ['rendered', function () { console.log('Report rendered'); }],
-      //       ['error', function (event) { console.log(event.detail); }]
-      //     ])
-      //   }
-
-      //   cssClassName={styles.embeddedReport}
-
-      // />
-
          <Carousel
             buttonsLocation={CarouselButtonsLocation.bottom}
             buttonsDisplay={CarouselButtonsDisplay.hidden}

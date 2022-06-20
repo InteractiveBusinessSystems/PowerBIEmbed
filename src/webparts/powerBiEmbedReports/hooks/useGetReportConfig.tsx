@@ -3,20 +3,6 @@ import { AadHttpClient, AadHttpClientFactory, HttpClientResponse, IHttpClientOpt
 import * as config from "../config/authConfig";
 import { IReportsList } from "./IReportsList.types";
 
-// export interface IReportsConfig {
-//   ReportName: string;
-//   WorkspaceId: string;
-//   ReportId: string;
-//   ReportSectionId: string;
-//   ReportUrl: string;
-//   ViewerType: string;
-//   UsersWhoCanView: [];
-//   Id: number;
-//   EmbedToken: string,
-//   EmbedUrl: string,
-//   AccessToken: string,
-// }
-
 export interface IReportConfig {
   EmbedToken: string,
   EmbedUrl: string,
@@ -70,12 +56,8 @@ export const useGetReportConfig = () => {
     let requestOptions: IHttpClientOptions;
     const AzureFunctionUrl = 'https://maryvillepowerbifunctionapp.azurewebsites.net/api/GetToken?code=05XQ2YuZTk_W1stv-Yr11J1ZWucLwhyAldLyrLiycrQMAzFuKRbETQ==';
 
-    console.log(reports);
-
     let reportsString = JSON.stringify(reports);
-    console.log(reportsString);
 
-    // const requestUrl = `${AzureFunctionUrl}&reports=${reportsString}`;
     const requestUrl = AzureFunctionUrl;
     const httpClientOptions: IHttpClientOptions = {
       body: reportsString
