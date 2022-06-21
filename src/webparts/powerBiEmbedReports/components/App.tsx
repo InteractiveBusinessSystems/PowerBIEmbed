@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useReportsList } from '../hooks/useReportsList';
-import { ReactElement, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import { useGetReportConfig } from '../hooks/useGetReportConfig';
 import { models } from 'powerbi-client';
@@ -37,7 +37,6 @@ export const App = (props:IAppProps) => {
 
 
     if (!getReportConfigIsLoading && !getReportConfigError) {
-      console.log(ReportConfig);
       reportsMap = ReportConfig.map((report) =>
         <div>
           <a

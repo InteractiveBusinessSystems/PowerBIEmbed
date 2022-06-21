@@ -75,7 +75,6 @@ export const useGetReportConfig = () => {
           httpClientOptions
         )
           .then((response: HttpClientResponse): Promise<IReportsList[]> => {
-            console.log(response);
             if (response.status === 200) {
               return response.json();
             }
@@ -84,10 +83,7 @@ export const useGetReportConfig = () => {
             }
           })
           .then((jsonResponse: IReportsList[]): void => {
-            console.log(jsonResponse);
-
             getReportConfigDispatch({ type: 'FETCH_SUCCESS', payload: jsonResponse });
-
           })
           .catch(error => {
             console.log(error);
