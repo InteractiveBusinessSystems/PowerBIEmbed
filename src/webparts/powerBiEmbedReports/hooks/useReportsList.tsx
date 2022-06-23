@@ -65,25 +65,24 @@ export const useReportsList = () => {
               let contains = false;
 
               currentUserGroups.forEach((userGroup) => {
-                if (groupName.toLowerCase() === userGroup.toLowerCase()) {
+                if (groupName === userGroup) {
                   contains = true;
                 }
               });
+              if (contains) {
+                results.push({
+                  "ReportName": report.Title,
+                  "DataSetsId": report.DataSetsId,
+                  "WorkspaceId": report.WorkspaceId,
+                  "ReportId": report.ReportId,
+                  "ReportSectionId": report.ReportSectionId,
+                  "ReportUrl": report.ReportUrl,
+                  "ViewerType": report.ViewerType,
+                  "UsersWhoCanView": report.UsersWhoCanView,
+                  "Id": parseInt(report.Id)
+                });
+              }
             });
-
-            if (contains) {
-              results.push({
-                "ReportName": report.Title,
-                "DataSetsId": report.DataSetsId,
-                "WorkspaceId": report.WorkspaceId,
-                "ReportId": report.ReportId,
-                "ReportSectionId": report.ReportSectionId,
-                "ReportUrl": report.ReportUrl,
-                "ViewerType": report.ViewerType,
-                "UsersWhoCanView": report.UsersWhoCanView,
-                "Id": parseInt(report.Id)
-              });
-            }
           }
 
           if(report.ViewerType === 'User'){
@@ -98,7 +97,6 @@ export const useReportsList = () => {
                 contains = true;
               }
             });
-
             if (contains) {
               results.push({
                 "ReportName": report.Title,
@@ -112,7 +110,6 @@ export const useReportsList = () => {
                 "Id": parseInt(report.Id)
               });
             }
-
           }
 
         });
