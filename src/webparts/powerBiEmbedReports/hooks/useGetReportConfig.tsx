@@ -1,6 +1,5 @@
 import { useCallback, useReducer } from "react";
 import { AadHttpClient, AadHttpClientFactory, HttpClientResponse, IHttpClientOptions } from '@microsoft/sp-http';
-import * as config from "../config/authConfig";
 import { IReportsList } from "./IReportsList.types";
 
 export interface IReportConfig {
