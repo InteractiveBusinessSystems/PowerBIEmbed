@@ -18,7 +18,7 @@ export interface getReportConfigInitialState {
 type Action = { type: "FETCH_START" } | { type: "FETCH_SUCCESS"; payload: getReportConfigInitialState["ReportConfig"] } | { type: "FETCH_ERROR"; payload: getReportConfigInitialState["getReportConfigError"] } | { type: "RESET_getReportConfig" };
 
 export const initialState: getReportConfigInitialState = {
-  ReportConfig: [{ ReportName: "", DataSetsId: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
+  ReportConfig: [{ ReportName: "", DataSetsId: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
   getReportConfigIsLoading: false,
   getReportConfigError: null,
 };
@@ -36,7 +36,7 @@ const getReportConfigReducer = (state: getReportConfigInitialState, action: Acti
     }
     case 'RESET_getReportConfig': {
       return {
-        ReportConfig: [{ ReportName: "", WorkspaceId: "", ReportId: "", ReportSectionId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
+        ReportConfig: [{ ReportName: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
         getReportConfigIsLoading: false,
         getReportConfigError: null
       };

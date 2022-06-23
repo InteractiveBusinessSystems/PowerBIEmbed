@@ -52,7 +52,7 @@ export const useReportsList = () => {
       const currentUserGroups = await graphfi(graph).me.getMemberGroups(true);
 
       try{
-      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'DataSetsId', 'WorkspaceId', 'ReportId', 'ReportSectionId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
+      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'DataSetsId', 'WorkspaceId', 'ReportId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
 
         items.forEach((report) => {
           if(report.ViewerType === 'Group'){
@@ -75,7 +75,6 @@ export const useReportsList = () => {
                   "DataSetsId": report.DataSetsId,
                   "WorkspaceId": report.WorkspaceId,
                   "ReportId": report.ReportId,
-                  "ReportSectionId": report.ReportSectionId,
                   "ReportUrl": report.ReportUrl,
                   "ViewerType": report.ViewerType,
                   "UsersWhoCanView": report.UsersWhoCanView,
@@ -103,7 +102,6 @@ export const useReportsList = () => {
                 "DataSetsId": report.DataSetsId,
                 "WorkspaceId": report.WorkspaceId,
                 "ReportId": report.ReportId,
-                "ReportSectionId": report.ReportSectionId,
                 "ReportUrl": report.ReportUrl,
                 "ViewerType": report.ViewerType,
                 "UsersWhoCanView": report.UsersWhoCanView,
