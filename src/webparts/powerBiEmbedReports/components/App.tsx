@@ -101,6 +101,7 @@ export const App = (props:IAppProps) => {
   if (!isAudienced) {
     return (
       <div>
+        <p>You need to set up your web part. Please edit the web part and select a security group.</p>
       </div>
     )
   }

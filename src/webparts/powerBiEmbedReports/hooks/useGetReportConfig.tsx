@@ -53,7 +53,7 @@ export const useGetReportConfig = () => {
     getReportConfigDispatch({ type: "FETCH_START" });
     let results: IReportsList[];
     let requestOptions: IHttpClientOptions;
-    const AzureFunctionUrl = 'https://maryvillepowerbifunctionapp.azurewebsites.net/api/GetToken?code=05XQ2YuZTk_W1stv-Yr11J1ZWucLwhyAldLyrLiycrQMAzFuKRbETQ==';
+    const AzureFunctionUrl = 'https://powerbisharepoint.azurewebsites.net/api/GetToken?code=NT8rk9oNqDIVe92KsxQPodRrynS_4t9FeTxQK7WeNtPKAzFu-vzy8w==';
 
     let reportsString = JSON.stringify(reports);
 
@@ -64,7 +64,7 @@ export const useGetReportConfig = () => {
 
     aadHttpClient.getClient(
       //This is the App's Client ID
-      '170af556-d26c-40b3-9a96-361ce11d683d'
+      'a0ac7405-5171-4909-8f8f-c195ab60c28d'
     )
       .then((client: AadHttpClient): void => {
         client.post(

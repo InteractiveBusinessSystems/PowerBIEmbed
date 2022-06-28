@@ -39,19 +39,6 @@ const checkMemberGroupsReducer = (state: checkMemberGroupsInitialState, action: 
 
 export const useCheckMemberGroupsAgainstGroups = () => {
   const [state, checkMemberGroupsDispatch] = useReducer(checkMemberGroupsReducer, initialState);
-  // const [audienceGroups, setAudienceGroups] = useState([]);
-  // const [currentUserGroups, setCurrentUserGroups] = useState([]);
-
-  // useEffect(()=>{
-  //   if(groups.length > 0){
-  //     setAudienceGroups(groups);
-  //   }
-  //   if(userGroups.length > 0){
-  //     setCurrentUserGroups(userGroups);
-  //   }
-  // },[groups, userGroups]);
-
-
 
   const checkMemberGroupsAgainstGroups = useCallback((groups, userGroups) => {
     checkMemberGroupsDispatch({ type: "FETCH_START" });
