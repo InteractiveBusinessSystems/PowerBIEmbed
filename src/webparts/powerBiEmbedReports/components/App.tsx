@@ -48,6 +48,35 @@ export const App = (props:IAppProps) => {
             embedConfig={{
               type: 'report',   // Supported types: report, dashboard, tile, visual and qna
               id: report.ReportId,
+              embedUrl: `https://app.powerbi.com/reportEmbed?reportId=${report.ReportId}&groupId=${report.WorkspaceId}`,
+              accessToken: report.accessToken,
+              tokenType: models.TokenType.Aad,
+              settings: {
+                panes: {
+                  filters: {
+                    expanded: false,
+                    visible: true
+                  }
+                },
+                // background: models.BackgroundType.Transparent,
+              }
+            }}
+
+            eventHandlers={
+              new Map([
+                ['loaded', function () { console.log('Report loaded'); }],
+                ['rendered', function () { console.log('Report rendered'); }],
+                ['error', function (event) { console.log(event.detail); }]
+              ])
+            }
+
+            cssClassName={styles.embeddedReport}
+
+          />
+          {/* <PowerBIEmbed
+            embedConfig={{
+              type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+              id: report.ReportId,
               embedUrl: report.EmbedUrl,
               accessToken: report.EmbedToken,
               tokenType: models.TokenType.Embed,
@@ -72,7 +101,7 @@ export const App = (props:IAppProps) => {
 
             cssClassName={styles.embeddedReport}
 
-          />
+          /> */}
         </div>
       );
     }
