@@ -6,16 +6,21 @@ import { spfi, SPFI } from '@pnp/sp';
 import { IReportsList } from "./IReportsList.types";
 import { InteractionRequiredAuthError } from "@azure/msal-browser";
 import { forEach } from "lodash";
+import * as React from "react";
+import { PowerBIEmbed } from "powerbi-client-react";
+import { models } from 'powerbi-client';
+import styles from '../components/PowerBiEmbedReports.module.scss';
 
-export interface IReportConfig {
-  EmbedToken: string,
-  EmbedUrl: string,
-  AccessToken: string,
-  ReportId: string,
-}
+// export interface IReportConfig {
+//   EmbedToken: string,
+//   EmbedUrl: string,
+//   AccessToken: string,
+//   ReportId: string,
+// }
 
 export interface getReportConfigInitialState {
-  ReportConfig: IReportsList[];
+  // ReportConfig: IReportsList[];
+  ReportConfig: any[];
   getReportConfigIsLoading: boolean;
   getReportConfigError: unknown;
 }
@@ -23,7 +28,8 @@ export interface getReportConfigInitialState {
 type Action = { type: "FETCH_START" } | { type: "FETCH_SUCCESS"; payload: getReportConfigInitialState["ReportConfig"] } | { type: "FETCH_ERROR"; payload: getReportConfigInitialState["getReportConfigError"] } | { type: "RESET_getReportConfig" };
 
 export const initialState: getReportConfigInitialState = {
-  ReportConfig: [{ ReportName: "", DataSetsId: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
+  // ReportConfig: [{ ReportName: "", DataSetsId: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
+  ReportConfig: null,
   getReportConfigIsLoading: false,
   getReportConfigError: null,
 };
@@ -41,7 +47,8 @@ const getReportConfigReducer = (state: getReportConfigInitialState, action: Acti
     }
     case 'RESET_getReportConfig': {
       return {
-        ReportConfig: [{ ReportName: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
+        // ReportConfig: [{ ReportName: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
+        ReportConfig: null,
         getReportConfigIsLoading: false,
         getReportConfigError: null
       };
@@ -70,6 +77,7 @@ export const useGetReportConfig = () => {
   const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports) => {
     getReportConfigDispatch({ type: "FETCH_START" });
     let results: IReportsList[] = [];
+    let returnedResults: any[] = [];
     let loginResponse;
     let accessToken = "";
     const currentUser: any = await spfi(sp).web.currentUser();
@@ -162,6 +170,7 @@ export const useGetReportConfig = () => {
                 "EmbedUrl": embedUrl
               });
 
+
             }
             else {
               errorMessage.push("Error " + response.status + ": " + body.error.code);
@@ -182,7 +191,46 @@ export const useGetReportConfig = () => {
 
       });
       console.log(results);
-      getReportConfigDispatch({ type: 'FETCH_SUCCESS', payload: results });
+
+      returnedResults = results.map((reportData) =>
+        <div>
+          <a
+            href={reportData.ReportUrl}
+            target="_blank"
+            className={styles.reportTitle}
+          >{reportData.ReportName}</a>
+          <PowerBIEmbed
+            embedConfig={{
+              type: 'report',   // Supported types: report, dashboard, tile, visual and qna
+              id: reportData.ReportId,
+              embedUrl: reportData.EmbedUrl,
+              accessToken: reportData.AccessToken,
+              tokenType: models.TokenType.Aad,
+              settings: {
+                panes: {
+                  filters: {
+                    expanded: false,
+                    visible: true
+                  }
+                },
+                // background: models.BackgroundType.Transparent,
+              }
+            }}
+
+            eventHandlers={
+              new Map([
+                ['loaded', function () { console.log('Report loaded'); }],
+                ['rendered', function () { console.log('Report rendered'); }],
+                ['error', function (event) { console.log(event.detail); }]
+              ])
+            }
+
+            cssClassName={styles.embeddedReport}
+          />
+        </div>
+      );
+      console.log(returnedResults);
+      getReportConfigDispatch({ type: 'FETCH_SUCCESS', payload: returnedResults });
     }
     else {
       // user is not logged in or cached, you will need to log them in to acquire a token
