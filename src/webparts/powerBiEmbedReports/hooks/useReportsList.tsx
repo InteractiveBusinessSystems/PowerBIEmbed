@@ -111,6 +111,7 @@ export const useReportsList = () => {
           }
 
         });
+        console.log(results);
         reportsListDispatch({type: 'FETCH_SUCCESS', payload: results});
       }
       catch(e){

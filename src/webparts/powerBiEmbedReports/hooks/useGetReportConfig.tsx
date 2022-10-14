@@ -11,13 +11,6 @@ import { PowerBIEmbed } from "powerbi-client-react";
 import { models } from 'powerbi-client';
 import styles from '../components/PowerBiEmbedReports.module.scss';
 
-// export interface IReportConfig {
-//   EmbedToken: string,
-//   EmbedUrl: string,
-//   AccessToken: string,
-//   ReportId: string,
-// }
-
 export interface getReportConfigInitialState {
   // ReportConfig: IReportsList[];
   ReportConfig: any[];
@@ -28,7 +21,6 @@ export interface getReportConfigInitialState {
 type Action = { type: "FETCH_START" } | { type: "FETCH_SUCCESS"; payload: getReportConfigInitialState["ReportConfig"] } | { type: "FETCH_ERROR"; payload: getReportConfigInitialState["getReportConfigError"] } | { type: "RESET_getReportConfig" };
 
 export const initialState: getReportConfigInitialState = {
-  // ReportConfig: [{ ReportName: "", DataSetsId: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
   ReportConfig: null,
   getReportConfigIsLoading: false,
   getReportConfigError: null,
@@ -47,7 +39,6 @@ const getReportConfigReducer = (state: getReportConfigInitialState, action: Acti
     }
     case 'RESET_getReportConfig': {
       return {
-        // ReportConfig: [{ ReportName: "", WorkspaceId: "", ReportId: "", ReportUrl: "", ViewerType: "", UsersWhoCanView: [], Id: undefined, EmbedToken: "", EmbedUrl: "", AccessToken: "" }],
         ReportConfig: null,
         getReportConfigIsLoading: false,
         getReportConfigError: null
@@ -66,18 +57,13 @@ export const useGetReportConfig = () => {
     auth: {
       clientId: '170af556-d26c-40b3-9a96-361ce11d683d',
       authority: 'https://login.microsoftonline.com/4ec55493-6b1c-4565-a868-2ae940882c82',
-      // redirectUri: 'http://localhost:3000/blank.html'
-      // redirectUri: 'http://localhost:3000/myapp'
     }
   };
 
-
-
-
   const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports) => {
     getReportConfigDispatch({ type: "FETCH_START" });
+    let reportsLength = reports.length;
     let results: IReportsList[] = [];
-    let returnedResults: any[] = [];
     let loginResponse;
     let accessToken = "";
     const currentUser: any = await spfi(sp).web.currentUser();
@@ -141,8 +127,10 @@ export const useGetReportConfig = () => {
           console.error("Failure in making API call." + error);
         });
 
+      let reportsCounter = 0;
       //Power BI REST API calls to get the embed URLs of the reports
       reports.forEach(report => {
+
         fetch("https://api.powerbi.com/v1.0/myorg/groups/" + report.WorkspaceId + "/reports/" + report.ReportId, {
           headers: {
             "Authorization": "Bearer " + accessToken
@@ -150,8 +138,6 @@ export const useGetReportConfig = () => {
           method: "Get"
         }).then(response => {
           const errorMessage: string[] = [];
-          // errorMessage.push("Error occurred while fetching the embed URL of the report")
-          // errorMessage.push("Request Id: " + response.headers.get("requestId"));
 
           response.json().then(body => {
             if (response.ok) {
@@ -170,6 +156,11 @@ export const useGetReportConfig = () => {
                 "EmbedUrl": embedUrl
               });
 
+              reportsCounter ++;
+              if(reportsCounter === reportsLength){
+                console.log(results);
+                getReportConfigDispatch({ type: 'FETCH_SUCCESS', payload: results });
+              }
 
             }
             else {
@@ -188,49 +179,7 @@ export const useGetReportConfig = () => {
             console.log(embedError);
             getReportConfigDispatch({ type: 'FETCH_ERROR', payload: embedError });
           });
-
       });
-      console.log(results);
-
-      returnedResults = results.map((reportData) =>
-        <div>
-          <a
-            href={reportData.ReportUrl}
-            target="_blank"
-            className={styles.reportTitle}
-          >{reportData.ReportName}</a>
-          <PowerBIEmbed
-            embedConfig={{
-              type: 'report',   // Supported types: report, dashboard, tile, visual and qna
-              id: reportData.ReportId,
-              embedUrl: reportData.EmbedUrl,
-              accessToken: reportData.AccessToken,
-              tokenType: models.TokenType.Aad,
-              settings: {
-                panes: {
-                  filters: {
-                    expanded: false,
-                    visible: true
-                  }
-                },
-                // background: models.BackgroundType.Transparent,
-              }
-            }}
-
-            eventHandlers={
-              new Map([
-                ['loaded', function () { console.log('Report loaded'); }],
-                ['rendered', function () { console.log('Report rendered'); }],
-                ['error', function (event) { console.log(event.detail); }]
-              ])
-            }
-
-            cssClassName={styles.embeddedReport}
-          />
-        </div>
-      );
-      console.log(returnedResults);
-      getReportConfigDispatch({ type: 'FETCH_SUCCESS', payload: returnedResults });
     }
     else {
       // user is not logged in or cached, you will need to log them in to acquire a token

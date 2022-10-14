@@ -8,7 +8,7 @@ export interface IReportsList {
   ReportUrl: string;
   ViewerType: string;
   UsersWhoCanView: [];
-  Id: number;
+  Id: number | undefined;
   EmbedToken?: string;
   EmbedUrl?: string;
   AccessToken?: string;
