@@ -55,7 +55,7 @@ export const App = (props: IAppProps) => {
                 panes: {
                   filters: {
                     expanded: false,
-                    visible: true
+                    visible: false
                   }
                 },
                 // background: models.BackgroundType.Transparent,

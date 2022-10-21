@@ -53,20 +53,20 @@ export const useGetReportConfig = () => {
   const [reportConfigState, getReportConfigDispatch] = useReducer(getReportConfigReducer, initialState);
   const sp: SPFI = getSP();
 
-  const msalConfig = {
-    auth: {
-      clientId: '170af556-d26c-40b3-9a96-361ce11d683d',
-      authority: 'https://login.microsoftonline.com/4ec55493-6b1c-4565-a868-2ae940882c82',
-    }
-  };
-
-  //Maryville
   // const msalConfig = {
   //   auth: {
-  //     clientId: '26fd5c26-2f1b-449f-9cce-0b27ecc9016e',
-  //     authority: 'https://login.microsoftonline.com/0a89b54f-c81a-40aa-91d6-91a54133911e',
+  //     clientId: '170af556-d26c-40b3-9a96-361ce11d683d',
+  //     authority: 'https://login.microsoftonline.com/4ec55493-6b1c-4565-a868-2ae940882c82',
   //   }
   // };
+
+  //Maryville
+  const msalConfig = {
+    auth: {
+      clientId: '26fd5c26-2f1b-449f-9cce-0b27ecc9016e',
+      authority: 'https://login.microsoftonline.com/0a89b54f-c81a-40aa-91d6-91a54133911e',
+    }
+  };
 
   const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports) => {
     getReportConfigDispatch({ type: "FETCH_START" });
