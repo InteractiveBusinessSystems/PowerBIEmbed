@@ -52,7 +52,7 @@ export const useReportsList = () => {
       const currentUserGroups = await graphfi(graph).me.getMemberGroups(true);
 
       try{
-      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'DataSetsId', 'WorkspaceId', 'ReportId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
+      const items: any[] = await spfi(sp).web.lists.getByTitle('Power BI Reports List').items.select('Title', 'Id', 'WorkspaceId', 'ReportId', 'ReportUrl', 'ViewerType', 'UsersWhoCanView/Name').expand('UsersWhoCanView').top(500)();
 
         items.forEach((report) => {
           if(report.ViewerType === 'Group'){
@@ -72,7 +72,6 @@ export const useReportsList = () => {
               if (contains) {
                 results.push({
                   "ReportName": report.Title,
-                  "DataSetsId": report.DataSetsId,
                   "WorkspaceId": report.WorkspaceId,
                   "ReportId": report.ReportId,
                   "ReportUrl": report.ReportUrl,
@@ -99,7 +98,6 @@ export const useReportsList = () => {
             if (contains) {
               results.push({
                 "ReportName": report.Title,
-                "DataSetsId": report.DataSetsId,
                 "WorkspaceId": report.WorkspaceId,
                 "ReportId": report.ReportId,
                 "ReportUrl": report.ReportUrl,

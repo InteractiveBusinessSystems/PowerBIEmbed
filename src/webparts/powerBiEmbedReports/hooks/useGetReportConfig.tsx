@@ -60,6 +60,14 @@ export const useGetReportConfig = () => {
     }
   };
 
+  //Maryville
+  // const msalConfig = {
+  //   auth: {
+  //     clientId: '26fd5c26-2f1b-449f-9cce-0b27ecc9016e',
+  //     authority: 'https://login.microsoftonline.com/0a89b54f-c81a-40aa-91d6-91a54133911e',
+  //   }
+  // };
+
   const getReportConfig = useCallback(async (aadHttpClient: AadHttpClientFactory, reports) => {
     getReportConfigDispatch({ type: "FETCH_START" });
     let reportsLength = reports.length;
