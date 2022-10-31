@@ -39,4 +39,16 @@
     background-color: $ms-color-themeDark;
   }
 
+  @media screen and (min-width: 1025px){
+    .embeddedReport {
+      height: 700px;
+    }
+
+    .carouselContent {
+      height: 750px;
+      width: 1200px;
+    }
+
+  }
+
 }
